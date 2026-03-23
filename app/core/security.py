@@ -3,11 +3,8 @@ from typing import Optional, Dict, Any
 import jwt
 import random
 import string
-from passlib.context import CryptContext
+import bcrypt
 from app.core.config import settings
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class JWTService:
     """JWT Token Service"""
@@ -15,12 +12,19 @@ class JWTService:
     @staticmethod
     def hash_password(password: str) -> str:
         """Hash a password"""
-        return pwd_context.hash(password)
+        password_bytes = password.encode('utf-8')[:72]
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password_bytes, salt)
+        return hashed_password.decode('utf-8')
 
     @staticmethod
     def verify_password(plain_password: str, hashed_password: str) -> bool:
         """Verify a password against its hash"""
-        return pwd_context.verify(plain_password, hashed_password)
+        try:
+            password_bytes = plain_password.encode('utf-8')[:72]
+            return bcrypt.checkpw(password_bytes, hashed_password.encode('utf-8'))
+        except Exception:
+            return False
 
     @staticmethod
     def create_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
