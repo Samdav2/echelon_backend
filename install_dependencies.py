@@ -64,7 +64,8 @@ packages = [
     "wsproto==1.3.2",
     "a2wsgi==1.10.7"
     "mailjet-rest==1.3.4"
-    "cloudinary==1.41.0"
+    "cloudinary==1.41.0",
+    "psycopg2-binary==2.9.6",  # PostgreSQL driver (optional, only if using PostgreSQL)
 
 ]
 
