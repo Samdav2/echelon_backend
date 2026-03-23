@@ -49,10 +49,10 @@ class Settings(BaseSettings):
         "http://localhost:3000",
         "http://localhost:3001",
         "http://localhost:8000",
-        "https://echelontix.com.ng"
-        "http://echelontix.com.ng/"
-        "https://www.echelontix.com.ng"
-        "https://www.echelontix.com.ng/"
+        "https://echelontix.com.ng",
+        "http://echelontix.com.ng",
+        "https://www.echelontix.com.ng",
+        "http://www.echelontix.com.ng"
     ]
 
     # File Upload
