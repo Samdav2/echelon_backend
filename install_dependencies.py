@@ -66,7 +66,8 @@ packages = [
     "mailjet-rest==1.3.4"
     "cloudinary==1.41.0",
     "psycopg[binary]",
-    "psycopg-pool==3.2.1"
+    "psycopg-pool==3.2.1",
+    "PyJWT==2.8.0"
   # PostgreSQL driver (optional, only if using PostgreSQL)
 
 ]
