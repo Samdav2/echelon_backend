@@ -52,6 +52,7 @@ class Settings(BaseSettings):
         "https://echelontix.com.ng"
         "http://echelontix.com.ng/"
         "https://www.echelontix.com.ng"
+        "https://www.echelontix.com.ng/"
     ]
 
     # File Upload
