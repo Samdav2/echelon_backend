@@ -157,7 +157,14 @@ class DatabaseConnector:
 
             if settings.PG_PATH:
                 # Use PG_PATH directly - psycopg3 handles connection strings natively
+                # libpq requires strict a scheme like postgresql:// or postgres://
                 conninfo = settings.PG_PATH
+                if conninfo.startswith("postgresql+psycopg://"):
+                    conninfo = conninfo.replace("postgresql+psycopg://", "postgresql://", 1)
+                elif conninfo.startswith("postgresql+asyncpg://"):
+                    conninfo = conninfo.replace("postgresql+asyncpg://", "postgresql://", 1)
+                elif conninfo.startswith("postgres+"):
+                    conninfo = "postgres://" + conninfo.split("://", 1)[1]
                 logger.info(f"Using PG_PATH connection string")
             else:
                 # Build connection string from individual components

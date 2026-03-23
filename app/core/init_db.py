@@ -63,8 +63,14 @@ class DatabaseInitializer:
         elif db_type == "postgresql":
             # Use PG_PATH if provided (for cloud platforms), otherwise build from components
             if settings.PG_PATH:
-                # Replace postgresql:// with postgresql+psycopg:// for SQLAlchemy 2.0
-                connection_string = settings.PG_PATH.replace("postgresql://", "postgresql+psycopg://")
+                # Force psycopg3 dialect, removing asyncpg or default mappings
+                connection_string = settings.PG_PATH
+                if connection_string.startswith("postgres://"):
+                    connection_string = connection_string.replace("postgres://", "postgresql+psycopg://", 1)
+                elif connection_string.startswith("postgresql://"):
+                    connection_string = connection_string.replace("postgresql://", "postgresql+psycopg://", 1)
+                elif connection_string.startswith("postgresql+asyncpg://"):
+                    connection_string = connection_string.replace("postgresql+asyncpg://", "postgresql+psycopg://", 1)
                 return connection_string
             else:
                 return (
