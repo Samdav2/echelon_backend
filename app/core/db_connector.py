@@ -143,9 +143,9 @@ class DatabaseConnector:
         """Initialize PostgreSQL connection pool using psycopg (v3)"""
         try:
             import psycopg
-            from psycopg import pool as pg_pool_module
+            from psycopg_pool import ConnectionPool
         except ImportError:
-            raise ImportError("psycopg[binary] not installed. Run: pip install 'psycopg[binary]'")
+            raise ImportError("psycopg[binary] and psycopg-pool not installed. Run: pip install 'psycopg[binary]' psycopg-pool")
 
         try:
             # Parse PG_PATH if provided (e.g., postgresql://user:pass@host:5432/database)
@@ -165,12 +165,11 @@ class DatabaseConnector:
                 logger.info(f"Built connection string: postgresql://{pg_user}:***@{pg_host}:{pg_port}/{pg_database}")
 
             # Create connection pool
-            pg_pool = pg_pool_module.ConnectionPool(
+            pg_pool = ConnectionPool(
                 conninfo,
                 min_size=1,
                 max_size=10,
-                timeout=30,
-                check=pg_pool_module.check_connection
+                timeout=30
             )
             logger.info(f"✓ Connected to PostgreSQL")
             DatabaseConnector._pool = pg_pool
@@ -185,13 +184,13 @@ class DatabaseConnector:
         elif self._db_type == DatabaseType.MYSQL:
             return self._pool.get_connection()
         elif self._db_type == DatabaseType.POSTGRESQL:
-            # psycopg3 pool.getconn() method
+            # psycopg-pool ConnectionPool.getconn() method
             return self._pool.getconn()
 
     def return_connection(self, conn):
         """Return connection to pool (for PostgreSQL)"""
         if self._db_type == DatabaseType.POSTGRESQL:
-            # psycopg3 pool.putconn() method
+            # psycopg-pool ConnectionPool.putconn() method
             self._pool.putconn(conn)
         # MySQL and SQLite don't need explicit return
 

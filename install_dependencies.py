@@ -65,7 +65,9 @@ packages = [
     "a2wsgi==1.10.7"
     "mailjet-rest==1.3.4"
     "cloudinary==1.41.0",
-    "psycopg[binary]"  # PostgreSQL driver (optional, only if using PostgreSQL)
+    "psycopg[binary]",
+    "psycopg-pool==3.2.1"
+  # PostgreSQL driver (optional, only if using PostgreSQL)
 
 ]
 
