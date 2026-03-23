@@ -1,0 +1,272 @@
+Failed to connect to the database: Error: connect ETIMEDOUT
+    at PoolConnection._handleTimeoutError (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/mysql2/lib/base/connection.js:200:17)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7) {
+  errorno: 'ETIMEDOUT',
+  code: 'ETIMEDOUT',
+  syscall: 'connect',
+  fatal: true
+}
+Email sending failed: Error: Connection timeout
+    at SMTPConnection._formatError (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._onError (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:795:20)
+    at Timeout.<anonymous> (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:237:22)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7) {
+  code: 'ETIMEDOUT',
+  command: 'CONN'
+}
+Error during sign-up: Error: Failed to send email to wendywixpartner.us@gmail.com
+    at sendEmail (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:26:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SignUp (/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js:41:9)
+Email sending failed: Error: Connection timeout
+    at SMTPConnection._formatError (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._onError (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:795:20)
+    at Timeout.<anonymous> (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:237:22)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7) {
+  code: 'ETIMEDOUT',
+  command: 'CONN'
+}
+Error during sign-up: Error: Failed to send email to wendywixpartner.us@gmail.com
+    at sendEmail (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:26:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SignUp (/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js:41:9)
+Email sending failed: Error: Connection timeout
+    at SMTPConnection._formatError (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:809:19)
+    at SMTPConnection._onError (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:795:20)
+    at Timeout.<anonymous> (/home/biznexco/nodevenv/app.samdavweb.org.ng/22/lib/node_modules/nodemailer/lib/smtp-connection/index.js:237:22)
+    at listOnTimeout (node:internal/timers:594:17)
+    at process.processTimers (node:internal/timers:529:7) {
+  code: 'ETIMEDOUT',
+  command: 'CONN'
+}
+Error during sign-up: Error: Failed to send email to wendywixpartner.us@gmail.com
+    at sendEmail (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:26:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async SignUp (/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js:41:9)
+node:internal/modules/cjs/loader:1247
+  throw err;
+  ^
+
+Error: Cannot find module 'resend'
+Require stack:
+- /home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js
+- /home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js
+- /home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js
+- /home/biznexco/app.samdavweb.org.ng/index.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1244:15)
+    at Module._load (node:internal/modules/cjs/loader:1070:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:217:24)
+    at Module.require (node:internal/modules/cjs/loader:1335:12)
+    at require (node:internal/modules/helpers:136:16)
+    at Object.<anonymous> (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:1:20)
+    at Module._compile (node:internal/modules/cjs/loader:1562:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1699:10)
+    at Module.load (node:internal/modules/cjs/loader:1313:32) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js',
+    '/home/biznexco/app.samdavweb.org.ng/index.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v22.13.1
+node:internal/modules/cjs/loader:1247
+  throw err;
+  ^
+
+Error: Cannot find module 'resend'
+Require stack:
+- /home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js
+- /home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js
+- /home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js
+- /home/biznexco/app.samdavweb.org.ng/index.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1244:15)
+    at Module._load (node:internal/modules/cjs/loader:1070:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:217:24)
+    at Module.require (node:internal/modules/cjs/loader:1335:12)
+    at require (node:internal/modules/helpers:136:16)
+    at Object.<anonymous> (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:1:20)
+    at Module._compile (node:internal/modules/cjs/loader:1562:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1699:10)
+    at Module.load (node:internal/modules/cjs/loader:1313:32) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js',
+    '/home/biznexco/app.samdavweb.org.ng/index.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v22.13.1
+node:internal/modules/cjs/loader:1247
+  throw err;
+  ^
+
+Error: Cannot find module 'resend'
+Require stack:
+- /home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js
+- /home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js
+- /home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js
+- /home/biznexco/app.samdavweb.org.ng/index.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1244:15)
+    at Module._load (node:internal/modules/cjs/loader:1070:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:217:24)
+    at Module.require (node:internal/modules/cjs/loader:1335:12)
+    at require (node:internal/modules/helpers:136:16)
+    at Object.<anonymous> (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:1:20)
+    at Module._compile (node:internal/modules/cjs/loader:1562:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1699:10)
+    at Module.load (node:internal/modules/cjs/loader:1313:32) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js',
+    '/home/biznexco/app.samdavweb.org.ng/index.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v22.13.1
+node:internal/modules/cjs/loader:1247
+  throw err;
+  ^
+
+Error: Cannot find module 'resend'
+Require stack:
+- /home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js
+- /home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js
+- /home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js
+- /home/biznexco/app.samdavweb.org.ng/index.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1244:15)
+    at Module._load (node:internal/modules/cjs/loader:1070:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:217:24)
+    at Module.require (node:internal/modules/cjs/loader:1335:12)
+    at require (node:internal/modules/helpers:136:16)
+    at Object.<anonymous> (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:1:20)
+    at Module._compile (node:internal/modules/cjs/loader:1562:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1699:10)
+    at Module.load (node:internal/modules/cjs/loader:1313:32) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js',
+    '/home/biznexco/app.samdavweb.org.ng/index.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v22.13.1
+node:internal/modules/cjs/loader:1247
+  throw err;
+  ^
+
+Error: Cannot find module 'resend'
+Require stack:
+- /home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js
+- /home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js
+- /home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js
+- /home/biznexco/app.samdavweb.org.ng/index.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1244:15)
+    at Module._load (node:internal/modules/cjs/loader:1070:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:217:24)
+    at Module.require (node:internal/modules/cjs/loader:1335:12)
+    at require (node:internal/modules/helpers:136:16)
+    at Object.<anonymous> (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:1:20)
+    at Module._compile (node:internal/modules/cjs/loader:1562:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1699:10)
+    at Module.load (node:internal/modules/cjs/loader:1313:32) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js',
+    '/home/biznexco/app.samdavweb.org.ng/index.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v22.13.1
+node:internal/modules/cjs/loader:1247
+  throw err;
+  ^
+
+Error: Cannot find module 'resend'
+Require stack:
+- /home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js
+- /home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js
+- /home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js
+- /home/biznexco/app.samdavweb.org.ng/index.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1244:15)
+    at Module._load (node:internal/modules/cjs/loader:1070:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:217:24)
+    at Module.require (node:internal/modules/cjs/loader:1335:12)
+    at require (node:internal/modules/helpers:136:16)
+    at Object.<anonymous> (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:1:20)
+    at Module._compile (node:internal/modules/cjs/loader:1562:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1699:10)
+    at Module.load (node:internal/modules/cjs/loader:1313:32) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js',
+    '/home/biznexco/app.samdavweb.org.ng/index.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v22.13.1
+node:internal/modules/cjs/loader:1247
+  throw err;
+  ^
+
+Error: Cannot find module 'resend'
+Require stack:
+- /home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js
+- /home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js
+- /home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js
+- /home/biznexco/app.samdavweb.org.ng/index.js
+- /usr/local/lsws/fcgi-bin/lsnode.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1244:15)
+    at Module._load (node:internal/modules/cjs/loader:1070:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:217:24)
+    at Module.require (node:internal/modules/cjs/loader:1335:12)
+    at require (node:internal/modules/helpers:136:16)
+    at Object.<anonymous> (/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js:1:20)
+    at Module._compile (node:internal/modules/cjs/loader:1562:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1699:10)
+    at Module.load (node:internal/modules/cjs/loader:1313:32) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/biznexco/app.samdavweb.org.ng/src/utils/email-service.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/controllers/auth-controllers.js',
+    '/home/biznexco/app.samdavweb.org.ng/src/routes/auth-routes.js',
+    '/home/biznexco/app.samdavweb.org.ng/index.js',
+    '/usr/local/lsws/fcgi-bin/lsnode.js'
+  ]
+}
+
+Node.js v22.13.1

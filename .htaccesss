@@ -1,0 +1,7 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/joesedub/app.swiftjobs.com.ng"
+PassengerBaseURI "/"
+PassengerNodejs "/home/joesedub/nodevenv/app.swiftjobs.com.ng/19/bin/node"
+PassengerAppType node
+PassengerStartupFile index.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
