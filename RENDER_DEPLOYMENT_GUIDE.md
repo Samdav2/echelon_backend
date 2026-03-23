@@ -68,11 +68,14 @@ In the **Environment** section, add:
 ```env
 # Database
 DB_TYPE=postgresql
-PG_HOST=dpg-xxxxx.internal
-PG_USER=ticket_user
-PG_PASSWORD=your_password_here
-PG_DATABASE=ticket_db
-PG_PORT=5432
+PG_PATH=postgresql://ticket_user:your_password@dpg-xxxxx.internal:5432/ticket_db
+
+# Alternative: Use individual components instead of PG_PATH
+# PG_HOST=dpg-xxxxx.internal
+# PG_USER=ticket_user
+# PG_PASSWORD=your_password_here
+# PG_DATABASE=ticket_db
+# PG_PORT=5432
 
 # Application
 DEBUG=False
@@ -105,11 +108,26 @@ Click **Create Web Service** - Render will start deploying!
 
 ---
 
-## Step 4: Verify Deployment
+## Step 4: Python 3.14 PostgreSQL Support
+
+Render uses Python 3.14 by default. This backend is configured with **psycopg3** (v3.18+) for full Python 3.14 compatibility.
+
+### Key Points:
+- ✅ Uses `psycopg[binary]` (psycopg3) - not psycopg2
+- ✅ Full Python 3.14 support guaranteed
+- ✅ Automatic SQLAlchemy dialect: `postgresql+psycopg://`
+- ✅ Better connection pooling than psycopg2
+
+For details, see: `PSYCOPG3_MIGRATION.md`
+
+---
+
+## Step 5: Verify Deployment
 
 ### Check Deployment Logs:
 1. Service Dashboard → Logs tab
 2. Look for: `Application startup complete`
+3. For PostgreSQL: Look for: `✓ Connected to PostgreSQL`
 
 ### Test API:
 ```bash
@@ -118,7 +136,7 @@ curl https://your-service-name.onrender.com/health
 
 ---
 
-## Step 5: Setup Auto-Deployment
+## Step 6: Setup Auto-Deployment
 
 ### Enable GitHub Integration:
 1. Service Dashboard → Settings
@@ -137,7 +155,7 @@ __pycache__/
 
 ---
 
-## Step 6: Database Backups
+## Step 7: Database Backups
 
 ### Render's Built-in Backups:
 - Free tier: 1 backup (7 days)
@@ -153,7 +171,7 @@ __pycache__/
 
 ---
 
-## Step 7: Monitor Service
+## Step 8: Monitor Service
 
 ### Logs:
 Service Dashboard → Logs tab - real-time logs
@@ -166,7 +184,7 @@ Database Dashboard → Metrics tab
 
 ---
 
-## Step 8: Custom Domain (Optional)
+## Step 9: Custom Domain (Optional)
 
 ### Add Custom Domain to Backend:
 1. Service Dashboard → Settings
@@ -176,7 +194,7 @@ Database Dashboard → Metrics tab
 
 ---
 
-## Step 9: Environment-Specific Setup
+## Step 10: Environment-Specific Setup
 
 ### For Production:
 ```env
