@@ -88,6 +88,8 @@ async def get_profile(current_user: Dict = Depends(get_current_user)):
             "email": current_user.get("email", ""),
             "phoneno": None,
             "address": None,
+            "brandname": None,
+            "brand_name": None,
             "profile_picture": None
         }
 

@@ -381,7 +381,7 @@ __all__ = [
     "VerifyCodeRequest",
     "ResetPasswordRequest",
     "PasswordResetVerifyRequest",
-    
+
     # Interest Models
     "InterestResponse",
     "UserInterestedEventsResponse",

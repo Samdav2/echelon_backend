@@ -108,7 +108,7 @@ class CreatorProfileRepository:
                 name=profile_data.get('name'),
                 phoneno=profile_data.get('phone_no'),
                 address=profile_data.get('address'),
-                brandname=profile_data.get('brand_name'),
+                brandname=profile_data.get('brand_name') or profile_data.get('brandname'),
                 email=profile_data.get('email'),
             )
             session.add(profile)
@@ -164,6 +164,7 @@ class CreatorProfileRepository:
             "phoneno": profile.phoneno,
             "address": profile.address,
             "brandname": profile.brandname,
+            "brand_name": profile.brandname,
             "email": profile.email,
             "bio": profile.bio,
             "profile_picture": profile.profile_picture,
@@ -185,8 +186,9 @@ class CreatorProfileRepository:
                 profile.phoneno = profile_data.get('phone_no')
             if profile_data.get('address') is not None:
                 profile.address = profile_data.get('address')
-            if profile_data.get('brand_name') is not None:
-                profile.brandname = profile_data.get('brand_name')
+            brand_name_val = profile_data.get('brand_name') or profile_data.get('brandname')
+            if brand_name_val is not None:
+                profile.brandname = brand_name_val
             if profile_data.get('email') is not None:
                 profile.email = profile_data.get('email')
 
@@ -262,6 +264,8 @@ class UserProfileRepository:
             "name": profile.name,
             "phoneno": profile.phoneno,
             "address": profile.address,
+            "brandname": None,
+            "brand_name": None,
             "email": profile.email,
             "profile_picture": profile.profile_picture,
             "created_at": profile.created_at,
@@ -403,6 +407,7 @@ class EventRepository:
             "id": event.id,
             "creator_id": event.creator_id,
             "brand_name": event.brand_name,
+            "brandname": event.brand_name,
             "event_name": event.event_name,
             "event_address": event.event_address,
             "time_in": event.time_in,
