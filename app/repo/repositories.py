@@ -159,6 +159,7 @@ class CreatorProfileRepository:
         return {
             "id": profile.id,
             "user_id": profile.user_id,
+            "username": profile.user.username if profile.user else None,
             "name": profile.name,
             "phoneno": profile.phoneno,
             "address": profile.address,
@@ -257,6 +258,7 @@ class UserProfileRepository:
         return {
             "id": profile.id,
             "user_id": profile.user_id,
+            "username": profile.user.username if profile.user else None,
             "name": profile.name,
             "phoneno": profile.phoneno,
             "address": profile.address,

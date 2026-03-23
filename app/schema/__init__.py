@@ -66,6 +66,7 @@ class CreatorProfileUpdate(BaseModel):
 class CreatorProfile(CreatorProfileBase):
     id: int = Field(..., description="Profile ID")
     user_id: int = Field(..., description="User ID reference")
+    username: Optional[str] = Field(None, description="Username from user credentials")
     created_at: datetime = Field(..., description="Creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")
 
@@ -92,6 +93,7 @@ class UserProfileUpdate(BaseModel):
 class UserProfile(UserProfileBase):
     id: int = Field(..., description="Profile ID")
     user_id: int = Field(..., description="User ID reference")
+    username: Optional[str] = Field(None, description="Username from user credentials")
     created_at: datetime = Field(..., description="Creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")
 
