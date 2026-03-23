@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Form
-from typing import Dict, Any
+from typing import Dict, Any, Union, Optional
 from app.service.services import profile_service
 from app.dependencies import get_current_user
-from app.schema import CreatorProfileCreate, UserProfileCreate
+from app.schema import CreatorProfileCreate, UserProfileCreate, CreatorProfile, UserProfile
 
 router = APIRouter(tags=["profile"])
 
@@ -83,6 +83,7 @@ async def get_profile(current_user: Dict = Depends(get_current_user)):
         return {
             "id": current_user.get("id"),
             "user_id": current_user.get("id"),
+            "username": current_user.get("username", ""),
             "name": current_user.get("username", ""),
             "email": current_user.get("email", ""),
             "phoneno": None,
@@ -90,6 +91,7 @@ async def get_profile(current_user: Dict = Depends(get_current_user)):
             "profile_picture": None
         }
 
+    # Profile dict already contains all fields including brandname, bio, username
     return profile
 
 
