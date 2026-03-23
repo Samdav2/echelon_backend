@@ -36,8 +36,8 @@ class DatabaseInitializer:
         if db_type in ["sqlite", "mysql", "postgresql"]:
             return db_type
 
-        # Auto-detect: PostgreSQL > MySQL > SQLite
-        if settings.PG_HOST and settings.PG_USER:
+        # Auto-detect: PostgreSQL (PG_PATH or PG_HOST) > MySQL > SQLite
+        if settings.PG_PATH or (settings.PG_HOST and settings.PG_USER):
             return "postgresql"
         elif settings.MYSQL_HOST and settings.MYSQL_USER:
             return "mysql"
@@ -61,10 +61,16 @@ class DatabaseInitializer:
             )
 
         elif db_type == "postgresql":
-            return (
-                f"postgresql://{settings.PG_USER}:{settings.PG_PASSWORD}"
-                f"@{settings.PG_HOST}:{settings.PG_PORT or 5432}/{settings.PG_DATABASE}"
-            )
+            # Use PG_PATH if provided (for cloud platforms), otherwise build from components
+            if settings.PG_PATH:
+                # Replace postgresql:// with postgresql+psycopg:// for SQLAlchemy 2.0
+                connection_string = settings.PG_PATH.replace("postgresql://", "postgresql+psycopg://")
+                return connection_string
+            else:
+                return (
+                    f"postgresql+psycopg://{settings.PG_USER}:{settings.PG_PASSWORD}"
+                    f"@{settings.PG_HOST}:{settings.PG_PORT or 5432}/{settings.PG_DATABASE}"
+                )
 
     @staticmethod
     def initialize_database():

@@ -140,12 +140,12 @@ class DatabaseConnector:
 
     @staticmethod
     def _initialize_postgresql():
-        """Initialize PostgreSQL connection pool"""
+        """Initialize PostgreSQL connection pool using psycopg (v3)"""
         try:
-            import psycopg2
-            from psycopg2 import pool
+            import psycopg
+            from psycopg import pool as pg_pool_module
         except ImportError:
-            raise ImportError("psycopg2-binary not installed. Run: pip install psycopg2-binary")
+            raise ImportError("psycopg[binary] not installed. Run: pip install 'psycopg[binary]'")
 
         try:
             # Parse PG_PATH if provided (e.g., postgresql://user:pass@host:5432/database)
@@ -156,26 +156,23 @@ class DatabaseConnector:
             pg_port = settings.PG_PORT or 5432
 
             if settings.PG_PATH:
-                # Parse connection string
-                from urllib.parse import urlparse
-                url = urlparse(settings.PG_PATH)
-                pg_host = url.hostname
-                pg_user = url.username
-                pg_password = url.password
-                pg_database = url.path.lstrip('/')
-                pg_port = url.port or 5432
-                logger.info(f"Parsed PG_PATH: host={pg_host}, user={pg_user}, database={pg_database}, port={pg_port}")
+                # Use PG_PATH directly - psycopg3 handles connection strings natively
+                conninfo = settings.PG_PATH
+                logger.info(f"Using PG_PATH connection string")
+            else:
+                # Build connection string from individual components
+                conninfo = f"postgresql://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_database}"
+                logger.info(f"Built connection string: postgresql://{pg_user}:***@{pg_host}:{pg_port}/{pg_database}")
 
-            pg_pool = pool.SimpleConnectionPool(
-                1, 10,
-                host=pg_host,
-                database=pg_database,
-                user=pg_user,
-                password=pg_password,
-                port=pg_port,
-                autocommit=False
+            # Create connection pool
+            pg_pool = pg_pool_module.ConnectionPool(
+                conninfo,
+                min_size=1,
+                max_size=10,
+                timeout=30,
+                check=pg_pool_module.check_connection
             )
-            logger.info(f"✓ Connected to PostgreSQL at {pg_host}:{pg_port}/{pg_database}")
+            logger.info(f"✓ Connected to PostgreSQL")
             DatabaseConnector._pool = pg_pool
         except Exception as e:
             logger.error(f"✗ Failed to connect to PostgreSQL: {e}")
@@ -188,11 +185,13 @@ class DatabaseConnector:
         elif self._db_type == DatabaseType.MYSQL:
             return self._pool.get_connection()
         elif self._db_type == DatabaseType.POSTGRESQL:
+            # psycopg3 pool.getconn() method
             return self._pool.getconn()
 
     def return_connection(self, conn):
         """Return connection to pool (for PostgreSQL)"""
         if self._db_type == DatabaseType.POSTGRESQL:
+            # psycopg3 pool.putconn() method
             self._pool.putconn(conn)
         # MySQL and SQLite don't need explicit return
 
