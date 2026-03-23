@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     MYSQL_PORT: int = int(os.getenv("MYSQL_PORT", "3306"))
 
     # Database - PostgreSQL (optional)
+    # Can use either PG_PATH (full connection string) OR individual components
+    PG_PATH: Optional[str] = os.getenv("PG_PATH")  # e.g., "postgresql://user:pass@host:5432/database"
     PG_HOST: Optional[str] = os.getenv("PG_HOST")
     PG_USER: Optional[str] = os.getenv("PG_USER")
     PG_PASSWORD: Optional[str] = os.getenv("PG_PASSWORD")

@@ -166,24 +166,24 @@ import { v4 as uuidv4 } from 'uuid'; // or any token generation method
 
 async function attendEvent(eventId) {
   const token = uuidv4(); // Generate unique token
-  
+
   const formData = new FormData();
   formData.append('event_id', eventId);
   formData.append('token', token);
-  
+
   const response = await fetch('/attendEvent', {
     method: 'POST',
     body: formData,
   });
-  
+
   const ticket = await response.json();
-  
+
   // Store ticket locally
   localStorage.setItem(`ticket_${ticket.id}`, JSON.stringify({
     token: token,
     isVerified: false
   }));
-  
+
   return ticket;
 }
 ```
@@ -195,15 +195,15 @@ async function attendEvent(eventId) {
 async function verifyTicket(token) {
   const formData = new FormData();
   formData.append('token', token);
-  
+
   const response = await fetch('/verifyToken', {
     method: 'POST',
     body: formData,
   });
-  
+
   if (!response.ok) {
     const error = await response.json();
-    
+
     if (response.status === 400) {
       alert('❌ This ticket has already been used!');
       return null;
@@ -212,15 +212,15 @@ async function verifyTicket(token) {
       return null;
     }
   }
-  
+
   const result = await response.json();
-  
+
   // Display success
   console.log('✅ Ticket verified successfully!');
   console.log('User:', result.user.name);
   console.log('Event:', result.event.name);
   console.log('Verified at:', result.ticket.verified_at);
-  
+
   return result;
 }
 ```
@@ -232,19 +232,19 @@ async function verifyTicket(token) {
 async function scanTicket(scannedToken) {
   // Trim whitespace
   const token = scannedToken.trim();
-  
+
   try {
     const result = await verifyTicket(token);
-    
+
     if (!result) {
       // Already verified or invalid
       return false;
     }
-    
+
     // First verification successful
     displayEntrySuccess(result.user, result.event);
     return true;
-    
+
   } catch (error) {
     console.error('Verification failed:', error);
     alert('Server error during verification');

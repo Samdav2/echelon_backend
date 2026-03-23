@@ -48,7 +48,7 @@ class DatabaseConnector:
     @staticmethod
     def _detect_database_type() -> DatabaseType:
         """Detect which database to use based on configuration"""
-        # Priority: Explicit setting > PostgreSQL > MySQL > SQLite
+        # Priority: Explicit setting > PostgreSQL (PG_PATH or components) > MySQL > SQLite
 
         db_type = os.getenv("DB_TYPE", "").lower()
         if db_type in ["sqlite", "mysql", "postgresql", "postgres"]:
@@ -58,8 +58,8 @@ class DatabaseConnector:
             logger.info(f"Using explicitly configured database: {db_type}")
             return DatabaseConnector._db_type
 
-        # Check PostgreSQL config
-        if settings.PG_HOST and settings.PG_USER:
+        # Check PostgreSQL config (PG_PATH takes priority)
+        if settings.PG_PATH or (settings.PG_HOST and settings.PG_USER):
             DatabaseConnector._db_type = DatabaseType.POSTGRESQL
             logger.info("Auto-detected PostgreSQL configuration")
             return DatabaseConnector._db_type
@@ -148,16 +148,34 @@ class DatabaseConnector:
             raise ImportError("psycopg2-binary not installed. Run: pip install psycopg2-binary")
 
         try:
+            # Parse PG_PATH if provided (e.g., postgresql://user:pass@host:5432/database)
+            pg_host = settings.PG_HOST
+            pg_user = settings.PG_USER
+            pg_password = settings.PG_PASSWORD
+            pg_database = settings.PG_DATABASE
+            pg_port = settings.PG_PORT or 5432
+
+            if settings.PG_PATH:
+                # Parse connection string
+                from urllib.parse import urlparse
+                url = urlparse(settings.PG_PATH)
+                pg_host = url.hostname
+                pg_user = url.username
+                pg_password = url.password
+                pg_database = url.path.lstrip('/')
+                pg_port = url.port or 5432
+                logger.info(f"Parsed PG_PATH: host={pg_host}, user={pg_user}, database={pg_database}, port={pg_port}")
+
             pg_pool = pool.SimpleConnectionPool(
                 1, 10,
-                host=settings.PG_HOST,
-                database=settings.PG_DATABASE,
-                user=settings.PG_USER,
-                password=settings.PG_PASSWORD,
-                port=settings.PG_PORT or 5432,
+                host=pg_host,
+                database=pg_database,
+                user=pg_user,
+                password=pg_password,
+                port=pg_port,
                 autocommit=False
             )
-            logger.info(f"✓ Connected to PostgreSQL at {settings.PG_HOST}:{settings.PG_PORT or 5432}/{settings.PG_DATABASE}")
+            logger.info(f"✓ Connected to PostgreSQL at {pg_host}:{pg_port}/{pg_database}")
             DatabaseConnector._pool = pg_pool
         except Exception as e:
             logger.error(f"✗ Failed to connect to PostgreSQL: {e}")
