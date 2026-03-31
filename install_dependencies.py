@@ -68,6 +68,7 @@ packages = [
     "psycopg[binary]",
     "psycopg-pool==3.2.1",
     "PyJWT==2.8.0"
+    "cloudinary"
   # PostgreSQL driver (optional, only if using PostgreSQL)
 
 ]

@@ -81,8 +81,8 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        # Set a lock timeout so we don't hang forever if blocked by another process
-        connection.execute(sa.text("SET lock_timeout = '10s'"))
+        # Set a 60s lock timeout
+        connection.execute(sa.text("SET lock_timeout = '60s'"))
         context.configure(
             connection=connection, target_metadata=target_metadata
         )
