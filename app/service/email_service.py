@@ -6,6 +6,8 @@ import asyncio
 import json
 from typing import Dict, Any, Optional
 import os
+import cloudinary
+import cloudinary.uploader
 
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates", "email")
@@ -170,8 +172,6 @@ class FileService:
         if not hasattr(settings, 'CLOUDINARY_CLOUD_NAME') or not settings.CLOUDINARY_CLOUD_NAME:
             raise ValueError("Cloudinary configuration missing. Check .env")
 
-        import cloudinary
-        import cloudinary.uploader
 
         cloudinary.config(
             cloud_name=settings.CLOUDINARY_CLOUD_NAME,
