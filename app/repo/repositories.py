@@ -264,7 +264,7 @@ class UserProfileRepository:
             "name": profile.name,
             "phoneno": profile.phoneno,
             "address": profile.address,
-            "brandname": profile.brandname``,
+            "brandname": profile.brandname,
             "brand_name": profile.brandname,
             "email": profile.email,
             "profile_picture": profile.profile_picture,
