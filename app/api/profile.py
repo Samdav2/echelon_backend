@@ -86,11 +86,11 @@ async def get_profile(current_user: Dict = Depends(get_current_user)):
             "username": current_user.get("username", ""),
             "name": current_user.get("username", ""),
             "email": current_user.get("email", ""),
-            "phoneno": None,
-            "address": None,
-            "brandname": None,
-            "brand_name": None,
-            "profile_picture": None
+            "phoneno": current_user.get("phone_no", ""),
+            "address": current_user.get("address", ""),
+            "brandname": current_user.get("brand_name", ""),
+            "brand_name": current_user.get("brand_name", ""),
+            "profile_picture": current_user.get("profile_picture", "")
         }
 
     # Profile dict already contains all fields including brandname, bio, username
