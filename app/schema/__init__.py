@@ -5,7 +5,7 @@ Validation schemas for request/response handling using Pydantic v2.
 All schemas include proper validation and documentation.
 """
 
-from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
+from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict, AliasChoices
 from typing import Optional, List, Any
 from datetime import datetime, date as date_type, time
 from decimal import Decimal
@@ -277,12 +277,12 @@ class VerifyCodeRequest(BaseModel):
 
 class ResetPasswordRequest(BaseModel):
     email: EmailStr = Field(..., description="User email")
-    new_password: str = Field(..., min_length=8, description="New password")
+    new_password: str = Field(..., min_length=8, description="New password", validation_alias=AliasChoices('new_password', 'newPassword', 'password'))
 
 class PasswordResetVerifyRequest(BaseModel):
     email: EmailStr = Field(..., description="User email")
     code: str = Field(..., description="Verification code")
-    new_password: str = Field(..., min_length=8, description="New password")
+    new_password: str = Field(..., min_length=8, description="New password", validation_alias=AliasChoices('new_password', 'newPassword', 'password'))
 
 
 # ============ Interest Models ============

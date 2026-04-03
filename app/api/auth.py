@@ -231,16 +231,10 @@ async def send_verification_code(data: VerificationCodeRequest, background_tasks
     return {"message": "Verification code sent successfully"}
 
 @router.post("/reset-password", response_model=dict)
-async def reset_password(data: dict, background_tasks: BackgroundTasks):
+async def reset_password(data: ResetPasswordRequest, background_tasks: BackgroundTasks):
     """Request password reset - Step 1"""
-    email = data.get('email')
-    new_password = data.get('new_password')
-
-    if not email or not new_password:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email and new password are required"
-        )
+    email = data.email
+    new_password = data.new_password
 
     # Check if user exists
     user = user_service.get_user_by_email(email)
