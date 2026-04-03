@@ -43,13 +43,12 @@ class UserService:
         return UserRepository.get_by_email(email)
 
     @staticmethod
-    def reset_password(email: str, new_password: str) -> bool:
-        """Reset user password"""
+    def reset_password(email: str, password_hash: str) -> bool:
+        """Reset user password (password_hash must already be hashed)."""
         user = UserRepository.get_by_email(email)
         if not user:
             return False
 
-        password_hash = jwt_service.hash_password(new_password)
         return UserRepository.update_password(email, password_hash)
 
 class ProfileService:
