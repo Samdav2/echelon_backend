@@ -460,6 +460,17 @@ class TableCategory(Base):
         default=0,
         comment="Number of available tables"
     )
+    event_name = Column(
+        String(255),
+        nullable=False,
+        comment="Mirror of the event name for convenience"
+    )
+    is_active = Column(
+        Boolean,
+        default=True,
+        nullable=False,
+        comment="Whether the table category is active"
+    )
     created_at = Column(
         DateTime,
         default=datetime.utcnow,

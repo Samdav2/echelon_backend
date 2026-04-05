@@ -619,13 +619,20 @@ class TableCategoryRepository:
         """
         created: List[Dict[str, Any]] = []
         with get_session() as session:
+            # Fetch event name once for all tables
+            from app.models.models import EventCreation
+            event = session.query(EventCreation).filter(EventCreation.id == event_id).first()
+            event_name = event.event_name if event else "Unknown Event"
+
             for table in tables:
                 category = TableCategory(
                     event_id=event_id,
+                    event_name=event_name,
                     name=table.get('tableName') or table.get('name'),
                     price=table.get('tablePrice') or table.get('price'),
                     capacity=table.get('tableCapacity') or table.get('capacity'),
                     available_tables=table.get('available_tables') or 0,
+                    is_active=True
                 )
                 session.add(category)
                 session.flush()
@@ -679,10 +686,12 @@ class TableCategoryRepository:
         return {
             "id": category.id,
             "event_id": category.event_id,
+            "event_name": category.event_name,
             "name": category.name,
             "capacity": category.capacity,
-            "price": category.price,
+            "price": float(category.price) if category.price else 0,
             "available_tables": category.available_tables,
-            "created_at": category.created_at,
-            "updated_at": category.updated_at,
+            "is_active": category.is_active,
+            "created_at": category.created_at.isoformat() if category.created_at else None,
+            "updated_at": category.updated_at.isoformat() if category.updated_at else None
         }

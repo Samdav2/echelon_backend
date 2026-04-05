@@ -173,6 +173,8 @@ class TableCategoryUpdate(BaseModel):
 class TableCategory(TableCategoryBase):
     id: int = Field(..., description="Table category ID")
     event_id: int = Field(..., description="Event ID reference")
+    event_name: str = Field(..., description="Event name")
+    is_active: bool = Field(default=True, description="Whether the table category is active")
     created_at: datetime = Field(..., description="Creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")
 
