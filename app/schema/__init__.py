@@ -179,6 +179,33 @@ class TableCategory(TableCategoryBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+# ============ Table Category Request Models (Frontend Specific) ============
+
+class TableCreationItem(BaseModel):
+    tableName: str = Field(..., min_length=1, max_length=50, alias="name")
+    tablePrice: Decimal = Field(..., ge=0, alias="price")
+    tableCapacity: int = Field(..., gt=0, alias="capacity")
+    available_tables: Optional[int] = Field(0, ge=0)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+class TableCreationRequest(BaseModel):
+    event_id: int = Field(..., description="Event ID reference")
+    tables: List[TableCreationItem] = Field(..., description="List of table categories to create")
+
+class TableUpdateItem(BaseModel):
+    id: int = Field(..., description="Unique ID of the table category to update")
+    tableName: Optional[str] = Field(None, max_length=50, alias="name")
+    tablePrice: Optional[Decimal] = Field(None, ge=0, alias="price")
+    tableCapacity: Optional[int] = Field(None, gt=0, alias="capacity")
+    available_tables: Optional[int] = Field(None, ge=0)
+
+    model_config = ConfigDict(populate_by_name=True)
+
+class TableUpdateRequest(BaseModel):
+    tables: List[TableUpdateItem] = Field(..., description="List of table categories to update")
+
+
 # ============ User Event / Ticket Models ============
 
 class UserEventBase(BaseModel):
@@ -358,6 +385,10 @@ __all__ = [
     "TableCategoryCreate",
     "TableCategoryUpdate",
     "TableCategory",
+    "TableCreationItem",
+    "TableCreationRequest",
+    "TableUpdateItem",
+    "TableUpdateRequest",
 
     # User Event / Ticket Models
     "UserEventBase",

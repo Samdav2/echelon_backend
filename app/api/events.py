@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File, Form, BackgroundTasks
 from typing import List, Dict, Any, Optional
-from app.schema import Event, EventCreate
+from app.schema import Event, EventCreate, TableCreationRequest, TableUpdateRequest
 from app.service.services import event_service, ticket_service
 from app.dependencies import get_current_user, optional_current_user
 from app.service.email_service import file_service, email_service, cache_service, EmailService
@@ -263,23 +263,17 @@ async def get_events_by_category_query(category: str):
 
 
 @router.post("/tableCreation", response_model=Dict[str, Any])
-async def table_creation(payload: Dict[str, Any]):
+async def table_creation(payload: TableCreationRequest):
     """Create table categories for an event.
 
     Expects JSON body with:
     - event_id: int
     - tables: list[{tableName, tablePrice, tableCapacity, available_tables?}]
     """
-    event_id = payload.get("event_id")
-    tables = payload.get("tables", [])
+    # Convert Pydantic models to dicts for the service layer
+    tables_data = [t.model_dump(by_alias=True) for t in payload.tables]
 
-    if not event_id or not isinstance(tables, list) or not tables:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="event_id and tables are required",
-        )
-
-    created = event_service.create_table_categories(event_id, tables)
+    created = event_service.create_table_categories(payload.event_id, tables_data)
     return {
         "message": f"{len(created)} table(s) created",
         "tableInfo": created,
@@ -287,21 +281,17 @@ async def table_creation(payload: Dict[str, Any]):
 
 
 @router.put("/updateTableCreation", response_model=Dict[str, Any])
-async def update_table_creation(payload: Dict[str, Any]):
+async def update_table_creation(payload: TableUpdateRequest):
     """Update existing table categories.
 
     Expects JSON body with:
     - tables: list[{id, tableName, tablePrice, tableCapacity, available_tables?}]
     """
-    tables = payload.get("tables", [])
+    # Convert Pydantic models to dicts for the service layer
+    # Note: Repository handles both 'id' and the data fields
+    tables_data = [t.model_dump(by_alias=True, exclude_none=True) for t in payload.tables]
 
-    if not isinstance(tables, list) or not tables:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="tables list is required",
-        )
-
-    updated = event_service.update_table_categories(tables)
+    updated = event_service.update_table_categories(tables_data)
     return {
         "message": f"{len(updated)} table(s) updated successfully",
         "updatedTables": updated,
