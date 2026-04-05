@@ -225,7 +225,13 @@ async def get_event(eventId: int = None):
             detail="Event not found"
         )
 
-    return {"event": [event]}
+    # The frontend expects 'table' at the root level
+    table_categories = event.pop("table_categories", [])
+
+    return {
+        "event": [event],
+        "table": table_categories
+    }
 
 @router.get("/getAllEvent", response_model=Dict[str, Any])
 async def get_all_events():

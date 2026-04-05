@@ -295,6 +295,100 @@ class UserProfileRepository:
 
             return UserProfileRepository._to_dict(profile)
 
+
+class TableCategoryRepository:
+    """Table categories data access layer"""
+
+    @staticmethod
+    def create_for_event(event_id: int, tables: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Create multiple table categories for an event.
+
+        Each table dict is expected to use keys similar to the legacy API:
+        - tableName
+        - tablePrice
+        - tableCapacity
+        Optionally:
+        - available_tables
+        """
+        created: List[Dict[str, Any]] = []
+        with get_session() as session:
+            # Fetch event name once for all tables
+            from app.models.models import EventCreation
+            event = session.query(EventCreation).filter(EventCreation.id == event_id).first()
+            event_name = event.event_name if event else "Unknown Event"
+
+            for table in tables:
+                category = TableCategory(
+                    event_id=event_id,
+                    event_name=event_name,
+                    name=table.get('tableName') or table.get('name'),
+                    price=table.get('tablePrice') or table.get('price'),
+                    capacity=table.get('tableCapacity') or table.get('capacity'),
+                    available_tables=table.get('available_tables') or 0,
+                    is_active=True
+                )
+                session.add(category)
+                session.flush()
+                session.refresh(category)
+                created.append(TableCategoryRepository._to_dict(category))
+
+        return created
+
+    @staticmethod
+    def update_tables(tables: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Update multiple table categories.
+
+        Each table dict must include 'id' and may include tableName/tablePrice/tableCapacity.
+        """
+        updated: List[Dict[str, Any]] = []
+        with get_session() as session:
+            for table in tables:
+                table_id = table.get('id')
+                if not table_id:
+                    continue
+
+                category = session.query(TableCategory).filter(TableCategory.id == table_id).first()
+                if not category:
+                    continue
+
+                if table.get('tableName') is not None or table.get('name') is not None:
+                    category.name = table.get('tableName') or table.get('name')
+                if table.get('tablePrice') is not None or table.get('price') is not None:
+                    category.price = table.get('tablePrice') or table.get('price')
+                if table.get('tableCapacity') is not None or table.get('capacity') is not None:
+                    category.capacity = table.get('tableCapacity') or table.get('capacity')
+                if table.get('available_tables') is not None:
+                    category.available_tables = table.get('available_tables')
+
+                session.add(category)
+                session.flush()
+                session.refresh(category)
+                updated.append(TableCategoryRepository._to_dict(category))
+
+        return updated
+
+    @staticmethod
+    def get_by_event(event_id: int) -> List[Dict[str, Any]]:
+        """Get all table categories for a given event"""
+        with get_session() as session:
+            tables = session.query(TableCategory).filter(TableCategory.event_id == event_id).all()
+            return [TableCategoryRepository._to_dict(t) for t in tables]
+
+    @staticmethod
+    def _to_dict(category: TableCategory) -> Dict[str, Any]:
+        return {
+            "id": category.id,
+            "event_id": category.event_id,
+            "event_name": category.event_name,
+            "name": category.name,
+            "capacity": category.capacity,
+            "price": float(category.price) if category.price else 0,
+            "available_tables": category.available_tables,
+            "is_active": category.is_active,
+            "created_at": category.created_at.isoformat() if category.created_at else None,
+            "updated_at": category.updated_at.isoformat() if category.updated_at else None
+        }
+
 class EventRepository:
     """Event data access layer"""
 
@@ -427,6 +521,7 @@ class EventRepository:
             "created_at": event.created_at,
             "updated_at": event.updated_at,
             "is_active": event.is_active,
+            "table_categories": [TableCategoryRepository._to_dict(tc) for tc in event.table_categories] if hasattr(event, 'table_categories') else []
         }
 
 class TicketRepository:
@@ -602,96 +697,3 @@ class InterestRepository:
         }
         return interests
 
-
-class TableCategoryRepository:
-    """Table categories data access layer"""
-
-    @staticmethod
-    def create_for_event(event_id: int, tables: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Create multiple table categories for an event.
-
-        Each table dict is expected to use keys similar to the legacy API:
-        - tableName
-        - tablePrice
-        - tableCapacity
-        Optionally:
-        - available_tables
-        """
-        created: List[Dict[str, Any]] = []
-        with get_session() as session:
-            # Fetch event name once for all tables
-            from app.models.models import EventCreation
-            event = session.query(EventCreation).filter(EventCreation.id == event_id).first()
-            event_name = event.event_name if event else "Unknown Event"
-
-            for table in tables:
-                category = TableCategory(
-                    event_id=event_id,
-                    event_name=event_name,
-                    name=table.get('tableName') or table.get('name'),
-                    price=table.get('tablePrice') or table.get('price'),
-                    capacity=table.get('tableCapacity') or table.get('capacity'),
-                    available_tables=table.get('available_tables') or 0,
-                    is_active=True
-                )
-                session.add(category)
-                session.flush()
-                session.refresh(category)
-                created.append(TableCategoryRepository._to_dict(category))
-
-        return created
-
-    @staticmethod
-    def update_tables(tables: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Update multiple table categories.
-
-        Each table dict must include 'id' and may include tableName/tablePrice/tableCapacity.
-        """
-        updated: List[Dict[str, Any]] = []
-        with get_session() as session:
-            for table in tables:
-                table_id = table.get('id')
-                if not table_id:
-                    continue
-
-                category = session.query(TableCategory).filter(TableCategory.id == table_id).first()
-                if not category:
-                    continue
-
-                if table.get('tableName') is not None or table.get('name') is not None:
-                    category.name = table.get('tableName') or table.get('name')
-                if table.get('tablePrice') is not None or table.get('price') is not None:
-                    category.price = table.get('tablePrice') or table.get('price')
-                if table.get('tableCapacity') is not None or table.get('capacity') is not None:
-                    category.capacity = table.get('tableCapacity') or table.get('capacity')
-                if table.get('available_tables') is not None:
-                    category.available_tables = table.get('available_tables')
-
-                session.add(category)
-                session.flush()
-                session.refresh(category)
-                updated.append(TableCategoryRepository._to_dict(category))
-
-        return updated
-
-    @staticmethod
-    def get_by_event(event_id: int) -> List[Dict[str, Any]]:
-        """Get all table categories for a given event"""
-        with get_session() as session:
-            tables = session.query(TableCategory).filter(TableCategory.event_id == event_id).all()
-            return [TableCategoryRepository._to_dict(t) for t in tables]
-
-    @staticmethod
-    def _to_dict(category: TableCategory) -> Dict[str, Any]:
-        return {
-            "id": category.id,
-            "event_id": category.event_id,
-            "event_name": category.event_name,
-            "name": category.name,
-            "capacity": category.capacity,
-            "price": float(category.price) if category.price else 0,
-            "available_tables": category.available_tables,
-            "is_active": category.is_active,
-            "created_at": category.created_at.isoformat() if category.created_at else None,
-            "updated_at": category.updated_at.isoformat() if category.updated_at else None
-        }
