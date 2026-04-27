@@ -1,4 +1,6 @@
 import smtplib
+import re
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from app.core.config import settings
@@ -72,10 +74,12 @@ class EmailService:
             # Fallback: return a minimal plain body
             return context.get("body_text", "")
 
-        # Very small/naive {{ key }} replacement so we don't depend on Jinja2
+        # Use regex for {{ key }} replacement to handle variable spacing and newlines
         rendered = content
         for key, value in context.items():
-            rendered = rendered.replace(f"{{{{ {key} }}}}", str(value))
+            # Match {{ key }}, {{key}}, {{  key  }}, etc. including newlines
+            pattern = r'\{\{\s*' + re.escape(key) + r'\s*\}\}'
+            rendered = re.sub(pattern, str(value), rendered, flags=re.DOTALL)
 
         return rendered
 
