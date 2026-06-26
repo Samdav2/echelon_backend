@@ -209,7 +209,8 @@ async def update_event(
         )
 
 @router.get("/getEvent", response_model=Dict[str, Any])
-async def get_event(eventId: int = None):
+@router.get("/getEvent/{eventId}", response_model=Dict[str, Any])
+async def get_event(eventId: Optional[int] = None):
     """Get event by ID"""
     if not eventId:
         raise HTTPException(
@@ -306,10 +307,10 @@ async def update_table_creation(payload: TableUpdateRequest):
 @router.post("/attendEvent", response_model=Dict[str, Any])
 async def attend_event(
     event_id: int = Form(...),
-    email: str = Form(...),
-    ticket_type: str = Form(...),
-    token: str = Form(...),  # Token from frontend, not generated
-    qrcode_url: str = Form(None),
+    email: Optional[str] = Form(None),
+    ticket_type: Optional[str] = Form("Regular"),
+    token: Optional[str] = Form(None),  # Token from frontend, generate if not provided
+    qrcode_url: Optional[str] = Form(None),
     current_user: Dict = Depends(get_current_user),
     background_tasks: BackgroundTasks = None,
 ):
@@ -321,12 +322,45 @@ async def attend_event(
             detail="Event not found"
         )
 
-    # Use the token from frontend, don't generate a new one
-    if not token or len(token.strip()) == 0:
+    # Prevent ticket purchases for past events
+    from datetime import date, datetime
+    event_date_val = event.get("date")
+    parsed_date = None
+
+    if isinstance(event_date_val, date) and not isinstance(event_date_val, datetime):
+        parsed_date = event_date_val
+    elif isinstance(event_date_val, datetime):
+        parsed_date = event_date_val.date()
+    elif isinstance(event_date_val, str):
+        try:
+            # Handle ISO format strings like "2024-06-25T00:00:00"
+            date_str = event_date_val.split("T")[0] if "T" in event_date_val else event_date_val
+            parsed_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            pass
+
+    if parsed_date and parsed_date < date.today():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Token is required"
+            detail="Cannot purchase tickets for a past event"
         )
+
+    # Parameter fallback processing
+    if not email or len(email.strip()) == 0:
+        email = current_user.get("email")
+        if not email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email is required"
+            )
+
+    if not ticket_type or len(ticket_type.strip()) == 0:
+        ticket_type = "Regular"
+
+    # Use the token from frontend, generate a new one if not provided
+    if not token or len(token.strip()) == 0:
+        import uuid
+        token = str(uuid.uuid4())
 
     ticket_data = {
         "event_id": event_id,
@@ -351,38 +385,6 @@ async def attend_event(
     event_date = event.get('date', '')
     event_category = event.get('category', '')
 
-    html_body = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Event Payment Success</title>
-        <style>
-            body {{ font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0; }}
-            h1 {{ color: #4CAF50; }}
-            img {{ width: 300px; }}
-            ul {{ padding-left: 20px; }}
-            li {{ margin: 5px 0; }}
-        </style>
-    </head>
-    <body>
-        <p>Hello {username},</p>
-        <p>You have successfully paid for the event: <strong>{event_name}</strong>.</p>
-        <div>
-            <img src="{event_pic if str(event_pic).startswith('http') else f'https://app.samdavweb.org.ng/{event_pic}'}" alt="{event_name} Picture" style="width: 300px;"/>
-        </div>
-        <ul>
-            <li>Your Token for the event: {token}</li>
-            <li>Your QR code for the event: <a href="{qrcode_url}" style="color: #1a73e8;">{qrcode_url}</a></li>
-        </ul>
-        <div>
-            Thanks for choosing Owl event website.
-            <h1>Enjoy your event!</h1>
-        </div>
-    </body>
-    </html>
-    """
-
     # Build branded payment success email from template
     event_image_url = event_pic if str(event_pic).startswith('http') else f"https://app.samdavweb.org.ng/{event_pic}"
     html_body = EmailService.render_template(
@@ -393,7 +395,7 @@ async def attend_event(
             "event_date": event_date,
             "category": event_category,
             "token": token,
-            "qrcode_url": qrcode_url,
+            "qrcode_url": qrcode_url or "",
             "event_image_url": event_image_url,
         },
     )
@@ -415,10 +417,14 @@ async def attend_event(
             html_body,
         )
 
-    return {
+    # Return ticket details merged at root level and nested for maximum compatibility
+    response_data = {
         "message": "Event attended successfully",
         "ticket": ticket
     }
+    # Merge all ticket keys into the root response dictionary
+    response_data.update(ticket)
+    return response_data
 
 @router.get("/getAttendedEvents", response_model=Dict[str, Any])
 async def get_attended_events(current_user: Dict = Depends(get_current_user)):
@@ -428,7 +434,8 @@ async def get_attended_events(current_user: Dict = Depends(get_current_user)):
     return {"event": tickets}
 
 @router.get("/getAttendee", response_model=List[Dict[str, Any]])
-async def get_attendees(eventId: int = None):
+@router.get("/getAttendee/{eventId}", response_model=List[Dict[str, Any]])
+async def get_attendees(eventId: Optional[int] = None):
     """Get all attendees for an event"""
     if not eventId:
         raise HTTPException(

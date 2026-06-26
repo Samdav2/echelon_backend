@@ -615,7 +615,7 @@ class TicketRepository:
 
     @staticmethod
     def _to_dict(ticket: UserEvent) -> Dict[str, Any]:
-        return {
+        result = {
             "id": ticket.id,
             "user_id": ticket.user_id,
             "event_id": ticket.event_id,
@@ -628,6 +628,69 @@ class TicketRepository:
             "verified_at": ticket.verified_at,
             "created_at": ticket.created_at,
         }
+
+        # Include event details if available
+        if ticket.event:
+            result["event"] = {
+                "id": ticket.event.id,
+                "event_name": ticket.event.event_name,
+                "event_address": ticket.event.event_address,
+                "date": ticket.event.date,
+                "time_in": ticket.event.time_in,
+                "time_out": ticket.event.time_out,
+                "picture": ticket.event.picture,
+                "category": ticket.event.category,
+                "summary": ticket.event.summary,
+                "price": float(ticket.event.price) if ticket.event.price else 0,
+            }
+            # For backward compatibility, also put event fields at root
+            result["event_name"] = ticket.event.event_name
+            result["event_address"] = ticket.event.event_address
+            result["date"] = ticket.event.date
+            result["time_in"] = ticket.event.time_in
+            result["time_out"] = ticket.event.time_out
+            result["picture"] = ticket.event.picture
+            result["category"] = ticket.event.category
+            result["summary"] = ticket.event.summary
+
+        # Include user profile details if available
+        if ticket.user:
+            profile_name = "User"
+            profile_pic = None
+            phoneno = None
+            address = None
+
+            # Check user_profile first, then creator_profile
+            if ticket.user.user_profile:
+                profile_name = ticket.user.user_profile.name
+                profile_pic = ticket.user.user_profile.profile_picture
+                phoneno = ticket.user.user_profile.phoneno
+                address = ticket.user.user_profile.address
+            elif ticket.user.creator_profile:
+                profile_name = ticket.user.creator_profile.name
+                profile_pic = ticket.user.creator_profile.profile_picture
+                phoneno = ticket.user.creator_profile.phoneno
+                address = ticket.user.creator_profile.address
+            else:
+                profile_name = ticket.user.username or "User"
+
+            result["user"] = {
+                "id": ticket.user.id,
+                "username": ticket.user.username,
+                "email": ticket.user.email,
+                "name": profile_name,
+                "profile_picture": profile_pic,
+                "phoneno": phoneno,
+                "address": address,
+            }
+            # For backward compatibility, also put user fields at root
+            result["username"] = ticket.user.username
+            result["name"] = profile_name
+            result["profile_picture"] = profile_pic
+            result["phoneno"] = phoneno
+            result["address"] = address
+
+        return result
 
 class UserInterestsRepository:
     """User Interests data access layer"""
