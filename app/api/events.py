@@ -309,9 +309,8 @@ async def attend_event(
     event_id: int = Form(...),
     email: Optional[str] = Form(None),
     ticket_type: Optional[str] = Form("Regular"),
-    token: Optional[str] = Form(None),  # Token from frontend, generate if not provided
     qrcode_url: Optional[str] = Form(None),
-    current_user: Dict = Depends(get_current_user),
+    current_user: Optional[Dict] = Depends(optional_current_user),
     background_tasks: BackgroundTasks = None,
 ):
     """Attend an event (purchase ticket)"""
@@ -333,7 +332,6 @@ async def attend_event(
         parsed_date = event_date_val.date()
     elif isinstance(event_date_val, str):
         try:
-            # Handle ISO format strings like "2024-06-25T00:00:00"
             date_str = event_date_val.split("T")[0] if "T" in event_date_val else event_date_val
             parsed_date = datetime.strptime(date_str, "%Y-%m-%d").date()
         except ValueError:
@@ -345,9 +343,9 @@ async def attend_event(
             detail="Cannot purchase tickets for a past event"
         )
 
-    # Parameter fallback processing
     if not email or len(email.strip()) == 0:
-        email = current_user.get("email")
+        if current_user:
+            email = current_user.get("email")
         if not email:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -357,17 +355,25 @@ async def attend_event(
     if not ticket_type or len(ticket_type.strip()) == 0:
         ticket_type = "Regular"
 
-    # Use the token from frontend, generate a new one if not provided
-    if not token or len(token.strip()) == 0:
+    # Get or create user_id
+    if current_user:
+        user_id = current_user["id"]
+    else:
+        from app.repo.repositories import UserRepository
         import uuid
-        token = str(uuid.uuid4())
+        existing_user = UserRepository.get_by_email(email)
+        if existing_user:
+            user_id = existing_user["id"]
+        else:
+            guest_username = f"guest_{email.split('@')[0]}_{uuid.uuid4().hex[:6]}"
+            new_user = UserRepository.create(username=guest_username, email=email, password_hash="guest_no_password")
+            user_id = new_user["id"] if new_user else 1
 
     ticket_data = {
         "event_id": event_id,
-        "user_id": current_user["id"],
+        "user_id": user_id,
         "email": email,
         "qrcode_url": qrcode_url,
-        "token": token,
         "ticket_type": ticket_type
     }
 
@@ -379,11 +385,13 @@ async def attend_event(
         )
 
     # Send confirmation email
-    username = current_user.get('username', 'User')
+    username = (current_user.get('username') if current_user else None) or email.split('@')[0]
     event_name = event.get('event_name', 'Event')
     event_pic = event.get('picture', '')
     event_date = event.get('date', '')
     event_category = event.get('category', '')
+    ticket_token = ticket.get('token', '')
+    ticket_qrcode = ticket.get('qrcode_url') or qrcode_url or ""
 
     # Build branded payment success email from template
     event_image_url = event_pic if str(event_pic).startswith('http') else f"https://app.samdavweb.org.ng/{event_pic}"
@@ -394,8 +402,8 @@ async def attend_event(
             "event_name": event_name,
             "event_date": event_date,
             "category": event_category,
-            "token": token,
-            "qrcode_url": qrcode_url or "",
+            "token": ticket_token,
+            "qrcode_url": ticket_qrcode,
             "event_image_url": event_image_url,
         },
     )

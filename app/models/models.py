@@ -543,10 +543,17 @@ class UserEvent(Base):
     )
     token = Column(
         String(500),
-        nullable=True,
+        nullable=False,
         unique=True,
         index=True,
         comment="Unique verification token for entry"
+    )
+    ticket_code = Column(
+        String(50),
+        nullable=False,
+        unique=True,
+        index=True,
+        comment="Human-readable ticket code (e.g. ECL-XXXX-XXXXXX)"
     )
     ticket_type = Column(
         String(50),

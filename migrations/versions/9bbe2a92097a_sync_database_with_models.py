@@ -334,17 +334,21 @@ def upgrade() -> None:
         END $$;
     """)
     op.execute("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS ticket_type VARCHAR(50)")
+    op.execute("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS ticket_code VARCHAR(50)")
     op.execute("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS isVerified BOOLEAN DEFAULT false NOT NULL")
     op.execute("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS verified_at TIMESTAMP WITHOUT TIME ZONE")
     op.execute("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL")
 
     op.execute("COMMENT ON COLUMN user_events.id IS 'Ticket record unique identifier'")
     op.execute("COMMENT ON COLUMN user_events.ticket_type IS 'Ticket category (Regular, VIP, VVIP, etc)'")
+    op.execute("COMMENT ON COLUMN user_events.ticket_code IS 'Human-readable ticket code (e.g. ECL-XXXX-XXXXXX)'")
     op.execute("COMMENT ON COLUMN user_events.isVerified IS 'Entry verification status'")
     op.execute("COMMENT ON COLUMN user_events.verified_at IS 'Ticket verification timestamp'")
     op.execute("COMMENT ON COLUMN user_events.created_at IS 'Record creation timestamp'")
     op.execute("ALTER TABLE user_events ALTER COLUMN isVerified DROP DEFAULT")
     op.execute("ALTER TABLE user_events ALTER COLUMN created_at DROP DEFAULT")
+    op.execute("UPDATE user_events SET token = md5(random()::text || clock_timestamp()::text)::uuid::text WHERE token IS NULL")
+    op.execute("ALTER TABLE user_events ALTER COLUMN token SET NOT NULL")
     op.alter_column('user_events', 'user_id',
                existing_type=sa.INTEGER(),
                comment='Reference to user',
@@ -614,6 +618,7 @@ def downgrade() -> None:
     op.drop_column('user_events', 'verified_at')
     op.drop_column('user_events', 'isVerified')
     op.drop_column('user_events', 'ticket_type')
+    op.drop_column('user_events', 'ticket_code')
     op.drop_column('user_events', 'id')
     op.drop_index(op.f('ix_user_credential_username'), table_name='user_credential')
     op.drop_index(op.f('ix_user_credential_email'), table_name='user_credential')

@@ -291,7 +291,7 @@ Please scan a valid ticket QR code.
 4. **Whitespace**: Backend automatically trims whitespace from tokens
 5. **Double-Use Prevention**: Each ticket can ONLY be verified once
 6. **Verified Timestamp**: Available in response - use for audit/reporting
-7. **No Regeneration**: Backend never generates tokens - only stores what frontend sends
+7. **No Regeneration**: Token and ticket code are generated server-side for security
 
 ---
 

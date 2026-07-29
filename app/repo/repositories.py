@@ -537,6 +537,7 @@ class TicketRepository:
                 email=ticket_data.get('email'),
                 qrcode_url=ticket_data.get('qrcode_url'),
                 token=ticket_data.get('token'),
+                ticket_code=ticket_data.get('ticket_code'),
                 ticket_type=ticket_data.get('ticket_type'),
             )
             session.add(ticket)
@@ -559,7 +560,7 @@ class TicketRepository:
         token = token.strip() if token else ""
         logging.info(f"Looking up ticket with token: '{token}'")
         with get_session() as session:
-            ticket = session.query(UserEvent).filter(UserEvent.token == token).first()
+            ticket = session.query(UserEvent).filter(or_(UserEvent.token == token, UserEvent.ticket_code == token)).first()
             if ticket:
                 logging.info(f"Ticket found for token: {token}")
             else:
@@ -623,6 +624,7 @@ class TicketRepository:
             "email": ticket.email,
             "qrcode_url": ticket.qrcode_url,
             "token": ticket.token,
+            "ticket_code": ticket.ticket_code,
             "ticket_type": ticket.ticket_type,
             "isVerified": ticket.isVerified,
             "verified_at": ticket.verified_at,
