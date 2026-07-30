@@ -550,7 +550,7 @@ class UserEvent(Base):
     )
     ticket_code = Column(
         String(50),
-        nullable=False,
+        nullable=True,
         unique=True,
         index=True,
         comment="Human-readable ticket code (e.g. ECL-XXXX-XXXXXX)"

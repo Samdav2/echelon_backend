@@ -1,5 +1,7 @@
 from pydantic_settings import BaseSettings
-from typing import Optional, List
+from pydantic import field_validator
+from typing import Optional, List, Union
+import json
 import os
 from dotenv import load_dotenv
 
@@ -45,7 +47,7 @@ class Settings(BaseSettings):
     VERIFICATION_CODE_EXPIRY: int = 5 * 60  # 5 minutes in seconds
 
     # CORS
-    ALLOWED_ORIGINS: List[str] = [
+    ALLOWED_ORIGINS: Union[List[str], str] = [
         "http://localhost:3000",
         "http://localhost:3001",
         "http://localhost:8000",
@@ -54,6 +56,23 @@ class Settings(BaseSettings):
         "https://www.echelontix.com.ng",
         "http://www.echelontix.com.ng"
     ]
+
+    @field_validator("ALLOWED_ORIGINS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        if isinstance(v, str):
+            v_str = v.strip()
+            if not v_str:
+                return []
+            if v_str.startswith("[") and v_str.endswith("]"):
+                try:
+                    return json.loads(v_str)
+                except Exception:
+                    pass
+            return [i.strip() for i in v_str.split(",") if i.strip()]
+        elif isinstance(v, list):
+            return v
+        return []
 
     # File Upload
     UPLOAD_DIR: str = "uploads"

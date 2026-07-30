@@ -134,6 +134,10 @@ class DatabaseInitializer:
             Base.metadata.create_all(bind=engine)
             logger.info("✅ Database tables created successfully")
 
+            # Auto-sync missing columns on existing tables
+            logger.info("🔄 Checking and patching missing schema columns...")
+            DatabaseInitializer._sync_schema_columns(engine, db_type)
+
             # Verify tables
             inspector = inspect(engine)
             tables = inspector.get_table_names()
@@ -164,6 +168,145 @@ class DatabaseInitializer:
             import traceback
             logger.error(traceback.format_exc())
             return False
+
+    @staticmethod
+    def _sync_schema_columns(engine, db_type: str):
+        """
+        Ensure missing columns defined in ORM models are automatically added to existing DB tables.
+        """
+        try:
+            inspector = inspect(engine)
+            existing_tables = inspector.get_table_names()
+
+            with engine.begin() as conn:
+                # 1. user_events table patches
+                if "user_events" in existing_tables:
+                    cols = {c["name"].lower(): c for c in inspector.get_columns("user_events")}
+
+                    # ticket_code column
+                    if "ticket_code" not in cols:
+                        logger.info("➕ Patching table user_events: adding ticket_code column")
+                        if db_type == "sqlite":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN ticket_code VARCHAR(50)"))
+                        elif db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS ticket_code VARCHAR(50)"))
+                        else:
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN ticket_code VARCHAR(50)"))
+
+                        # Backfill NULL ticket_code values for legacy rows
+                        if db_type == "postgresql":
+                            conn.execute(text(
+                                "UPDATE user_events SET ticket_code = 'ECL-' || UPPER(SUBSTRING(MD5(id::text || clock_timestamp()::text) FROM 1 FOR 8)) WHERE ticket_code IS NULL"
+                            ))
+                        elif db_type == "mysql":
+                            conn.execute(text(
+                                "UPDATE user_events SET ticket_code = CONCAT('ECL-', UPPER(SUBSTRING(MD5(CONCAT(id, NOW())), 1, 8))) WHERE ticket_code IS NULL"
+                            ))
+                        elif db_type == "sqlite":
+                            conn.execute(text(
+                                "UPDATE user_events SET ticket_code = 'ECL-' || hex(randomblob(4)) WHERE ticket_code IS NULL"
+                            ))
+
+                    # ticket_type column
+                    if "ticket_type" not in cols:
+                        logger.info("➕ Patching table user_events: adding ticket_type column")
+                        if db_type == "sqlite":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN ticket_type VARCHAR(50)"))
+                        elif db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS ticket_type VARCHAR(50)"))
+                        else:
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN ticket_type VARCHAR(50)"))
+
+                    # isVerified column (check case-insensitively)
+                    if "isverified" not in cols:
+                        logger.info("➕ Patching table user_events: adding isVerified column")
+                        if db_type == "postgresql":
+                            conn.execute(text('ALTER TABLE user_events ADD COLUMN IF NOT EXISTS "isVerified" BOOLEAN DEFAULT false NOT NULL'))
+                        elif db_type == "mysql":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN isVerified TINYINT(1) DEFAULT 0 NOT NULL"))
+                        else:
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN isVerified INTEGER DEFAULT 0 NOT NULL"))
+
+                    # verified_at column
+                    if "verified_at" not in cols:
+                        logger.info("➕ Patching table user_events: adding verified_at column")
+                        if db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS verified_at TIMESTAMP WITHOUT TIME ZONE"))
+                        elif db_type == "mysql":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN verified_at DATETIME"))
+                        else:
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN verified_at TIMESTAMP"))
+
+                    # created_at column
+                    if "created_at" not in cols:
+                        logger.info("➕ Patching table user_events: adding created_at column")
+                        if db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL"))
+                        elif db_type == "mysql":
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"))
+                        else:
+                            conn.execute(text("ALTER TABLE user_events ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL"))
+
+                # 2. creatorprofile table patches
+                if "creatorprofile" in existing_tables:
+                    cols = {c["name"].lower(): c for c in inspector.get_columns("creatorprofile")}
+                    if "bio" not in cols:
+                        if db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE creatorprofile ADD COLUMN IF NOT EXISTS bio TEXT"))
+                        else:
+                            conn.execute(text("ALTER TABLE creatorprofile ADD COLUMN bio TEXT"))
+                    if "profile_picture" not in cols:
+                        if db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE creatorprofile ADD COLUMN IF NOT EXISTS profile_picture VARCHAR(500)"))
+                        else:
+                            conn.execute(text("ALTER TABLE creatorprofile ADD COLUMN profile_picture VARCHAR(500)"))
+
+                # 3. userprofiles table patches
+                if "userprofiles" in existing_tables:
+                    cols = {c["name"].lower(): c for c in inspector.get_columns("userprofiles")}
+                    if "profile_picture" not in cols:
+                        if db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE userprofiles ADD COLUMN IF NOT EXISTS profile_picture VARCHAR(500)"))
+                        else:
+                            conn.execute(text("ALTER TABLE userprofiles ADD COLUMN profile_picture VARCHAR(500)"))
+
+                # 4. table_categories table patches
+                if "table_categories" in existing_tables:
+                    cols = {c["name"].lower(): c for c in inspector.get_columns("table_categories")}
+                    if "available_tables" not in cols:
+                        if db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE table_categories ADD COLUMN IF NOT EXISTS available_tables INTEGER DEFAULT 0 NOT NULL"))
+                        elif db_type == "mysql":
+                            conn.execute(text("ALTER TABLE table_categories ADD COLUMN available_tables INT DEFAULT 0 NOT NULL"))
+                        else:
+                            conn.execute(text("ALTER TABLE table_categories ADD COLUMN available_tables INTEGER DEFAULT 0 NOT NULL"))
+
+                # 5. user_credential table patches
+                if "user_credential" in existing_tables:
+                    cols = {c["name"].lower(): c for c in inspector.get_columns("user_credential")}
+                    if "is_active" not in cols:
+                        if db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE user_credential ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true NOT NULL"))
+                        elif db_type == "mysql":
+                            conn.execute(text("ALTER TABLE user_credential ADD COLUMN is_active TINYINT(1) DEFAULT 1 NOT NULL"))
+                        else:
+                            conn.execute(text("ALTER TABLE user_credential ADD COLUMN is_active INTEGER DEFAULT 1 NOT NULL"))
+
+                # 6. eventcreation table patches
+                if "eventcreation" in existing_tables:
+                    cols = {c["name"].lower(): c for c in inspector.get_columns("eventcreation")}
+                    if "is_active" not in cols:
+                        if db_type == "postgresql":
+                            conn.execute(text("ALTER TABLE eventcreation ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT true NOT NULL"))
+                        elif db_type == "mysql":
+                            conn.execute(text("ALTER TABLE eventcreation ADD COLUMN is_active TINYINT(1) DEFAULT 1 NOT NULL"))
+                        else:
+                            conn.execute(text("ALTER TABLE eventcreation ADD COLUMN is_active INTEGER DEFAULT 1 NOT NULL"))
+
+            logger.info("✅ Schema column synchronization complete.")
+        except Exception as e:
+            logger.warning(f"⚠️ Column schema sync warning: {str(e)}")
+
 
 
 
