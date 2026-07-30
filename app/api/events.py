@@ -310,6 +310,8 @@ async def attend_event(
     email: Optional[str] = Form(None),
     ticket_type: Optional[str] = Form("Regular"),
     qrcode_url: Optional[str] = Form(None),
+    token: Optional[str] = Form(None),
+    id: Optional[str] = Form(None),
     current_user: Optional[Dict] = Depends(optional_current_user),
     background_tasks: BackgroundTasks = None,
 ):
@@ -377,6 +379,10 @@ async def attend_event(
         "ticket_type": ticket_type
     }
 
+    provided_token = token or id
+    if provided_token and len(provided_token.strip()) > 0:
+        ticket_data["token"] = provided_token.strip()
+
     ticket = ticket_service.create_ticket(ticket_data)
     if not ticket:
         raise HTTPException(
@@ -391,6 +397,7 @@ async def attend_event(
     event_date = event.get('date', '')
     event_category = event.get('category', '')
     ticket_token = ticket.get('token', '')
+    ticket_code = ticket.get('ticket_code', '')
     ticket_qrcode = ticket.get('qrcode_url') or qrcode_url or ""
 
     # Build branded payment success email from template
@@ -403,6 +410,8 @@ async def attend_event(
             "event_date": event_date,
             "category": event_category,
             "token": ticket_token,
+            "ticket_token": ticket_token,
+            "ticket_code": ticket_code,
             "qrcode_url": ticket_qrcode,
             "event_image_url": event_image_url,
         },
@@ -428,7 +437,11 @@ async def attend_event(
     # Return ticket details merged at root level and nested for maximum compatibility
     response_data = {
         "message": "Event attended successfully",
-        "ticket": ticket
+        "ticket": ticket,
+        "token": ticket_token,
+        "ticket_token": ticket_token,
+        "ticket_code": ticket_code,
+        "qrcode_url": ticket_qrcode
     }
     # Merge all ticket keys into the root response dictionary
     response_data.update(ticket)

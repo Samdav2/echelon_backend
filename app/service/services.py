@@ -217,13 +217,13 @@ class TicketService:
     @staticmethod
     def create_ticket(ticket_data: Dict[str, Any]) -> Optional[Dict]:
         """Create a new ticket"""
-        # Always generate token and ticket_code server-side
-        if not ticket_data.get('token'):
-            ticket_data['token'] = str(uuid.uuid4())
         if not ticket_data.get('ticket_code'):
             ticket_data['ticket_code'] = TicketService._generate_ticket_code()
+        # Set token equal to ticket_code if not explicitly set so ticket_code is used everywhere
+        if not ticket_data.get('token'):
+            ticket_data['token'] = ticket_data['ticket_code']
         if not ticket_data.get('qrcode_url'):
-            ticket_data['qrcode_url'] = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={ticket_data['token']}"
+            ticket_data['qrcode_url'] = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={ticket_data['ticket_code']}"
         return TicketRepository.create(ticket_data)
 
     @staticmethod
