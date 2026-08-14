@@ -1,284 +1,169 @@
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ subject }}</title>
+  <title>{{ subject|default('Your Echelontix Access Credential') }}</title>
   <style type="text/css">
-    /* GLOBAL RESETS */
-    body,
-    table,
-    td,
-    a {
-      -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-    }
-
-    table,
-    td {
-      mso-table-lspace: 0pt;
-      mso-table-rspace: 0pt;
-    }
-
-    img {
-      -ms-interpolation-mode: bicubic;
-      border: 0;
-      height: auto;
-      line-height: 100%;
-      outline: none;
-      text-decoration: none;
-    }
-
-    table {
-      border-collapse: collapse !important;
-    }
-
-    body {
-      height: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100% !important;
-      background-color: #050505;
-      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
-
-    /* DESIGN TOKENS */
-    :root {
-      --gold: #C5A059;
-      --gold-light: #E7D192;
-      --black: #050505;
-      --charcoal: #111111;
-    }
-
-    .ticket-shadow {
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-    }
-
-    .btn:hover {
-      background-color: #E7D192 !important;
-      transform: translateY(-2px);
-    }
-
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    table { border-collapse: collapse !important; }
+    body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #080808; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
     @media only screen and (max-width: 600px) {
-      .container {
-        width: 100% !important;
-        padding: 10px !important;
-      }
-
-      .mobile-padding {
-        padding: 20px !important;
-      }
-
-      .hero-title {
-        font-size: 42px !important;
-        line-height: 46px !important;
-      }
-
-      .ticket-details {
-        width: 100% !important;
-        display: block !important;
-      }
+      .mobile-card { width: 100% !important; max-width: 100% !important; }
+      .mobile-padding { padding: 20px 15px !important; }
+      .mobile-title { font-size: 22px !important; line-height: 26px !important; }
+      .grid-stack { width: 100% !important; display: block !important; }
     }
   </style>
 </head>
-
-<body style="margin: 0; padding: 0; background-color: #050505;">
+<body style="margin: 0; padding: 0; background-color: #080808; color: #F5F3EE;">
   <!-- PREHEADER TEXT -->
   <div style="display: none; max-height: 0px; overflow: hidden;">
-    {{ preheader_text }}
+    {{ preheader_text|default('Official digital access pass from Echelontix.') }}
   </div>
 
-  <center>
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #050505;">
-      <tr>
-        <td align="center" style="padding: 40px 0;">
-          <!-- MAIN CONTAINER -->
-          <table border="0" cellpadding="0" cellspacing="0" width="600" class="container" style="width: 600px;">
-            <!-- LOGO / TOP BAR -->
-            <tr>
-              <td align="center" style="padding-bottom: 60px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                  <tr>
-                    <td align="left"
-                      style="font-size: 10px; letter-spacing: 5px; color: #C5A059; text-transform: uppercase; font-weight: 700;">
-                      EST. 2026
-                    </td>
-                    <td align="center">
-                      <div
-                        style="font-size: 28px; font-weight: 900; letter-spacing: 8px; color: #ffffff; text-transform: uppercase;">
-                        ECHELON<span style="color: #C5A059;">TIX.</span>
-                      </div>
-                    </td>
-                    <td align="right"
-                      style="font-size: 10px; letter-spacing: 5px; color: #C5A059; text-transform: uppercase; font-weight: 700;">
-                      PREMIUM
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #080808; width: 100%;">
+    <tr>
+      <td align="center" style="padding: 24px 10px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="560" class="mobile-card" style="width: 560px; max-width: 560px; background-color: #0C0C0E; border: 1px solid #C8A96B; border-radius: 16px; overflow: hidden;">
+          
+          <!-- TOP BRANDING BAR -->
+          <tr>
+            <td style="background-color: #080808; padding: 18px 24px; border-bottom: 1px solid #222222;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="left">
+                    <span style="font-size: 13px; font-weight: 800; letter-spacing: 4px; color: #F5F3EE; text-transform: uppercase;">
+                      ECHELONTIX
+                    </span>
+                    <div style="font-size: 8.5px; color: #A6A6A6; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px;">
+                      DIGITAL ACCESS PLATFORM
+                    </div>
+                  </td>
+                  <td align="right">
+                    <span style="display: inline-block; padding: 4px 10px; background-color: #221C12; border: 1px solid #C8A96B; border-radius: 6px; font-size: 10px; font-weight: 800; color: #E3C98A; letter-spacing: 2px; text-transform: uppercase;">
+                      {{ event_access|default('VIP PASS') }}
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-            <!-- HERO STATEMENT -->
-            <tr>
-              <td align="left" class="mobile-padding" style="padding: 0 0 40px 0;">
-                <h1 class="hero-title"
-                  style="margin: 0; color: #ffffff; font-size: 56px; line-height: 60px; font-weight: 200; letter-spacing: -2px;">
-                  {{ hero_title_line1 }}<br />
-                  <span style="font-weight: 800; color: #C5A059;">{{ hero_title_emphasis }}</span>
-                </h1>
-                <p
-                  style="color: #888888; font-size: 18px; line-height: 28px; margin-top: 20px; max-width: 450px; font-weight: 300;">
-                  {{ lead_text }}
-                </p>
-              </td>
-            </tr>
+          <!-- EVENT ARTWORK HEADER -->
+          {% if artwork_url %}
+          <tr>
+            <td style="background-color: #000000; text-align: center; position: relative;">
+              <img src="{{ artwork_url }}" alt="{{ ticket_title|default('Event Artwork') }}" width="560" style="width: 100%; max-width: 560px; height: auto; display: block;" />
+            </td>
+          </tr>
+          {% endif %}
 
-            <!-- TICKET CARD / DETAILS BLOCK -->
-            <tr>
-              <td align="center" style="padding-bottom: 50px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" class="ticket-shadow"
-                  style="background-color: #111111; border: 1px solid #222222; border-radius: 4px; overflow: hidden;">
-                  <tr>
-                    <td height="4" style="background: linear-gradient(90deg, #C5A059, #E7D192, #C5A059);"></td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 40px;">
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                        <tr>
-                          <td>
-                            <div
-                              style="font-size: 11px; color: #C5A059; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; font-weight: 700;">
-                              {{ ticket_label }}</div>
-                            <div style="font-size: 24px; color: #ffffff; font-weight: 700; margin-bottom: 30px;">{{
-                              ticket_title }}</div>
-                          </td>
-                          <td align="right" valign="top">
-                            <div
-                              style="width: 60px; height: 60px; border: 1px solid #C5A059; border-radius: 50%; color: #C5A059; font-size: 9px; line-height: 60px; text-align: center; letter-spacing: 1px;">
-                              {{ ticket_seal }}</div>
-                          </td>
-                        </tr>
-                      </table>
+          <!-- EVENT TITLE & TAGLINE -->
+          <tr>
+            <td class="mobile-padding" style="padding: 24px 28px 16px 28px; background-color: #0C0C0E;">
+              <div style="font-size: 9px; color: #C8A96B; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
+                ✦ EXCLUSIVE EVENT
+              </div>
+              <h1 class="mobile-title" style="margin: 0; font-size: 26px; line-height: 30px; font-weight: 800; color: #F5F3EE; letter-spacing: -0.5px;">
+                {{ ticket_title }}
+              </h1>
+              <p style="margin: 6px 0 0 0; font-size: 12px; color: #C8A96B; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                {{ ticket_label|default('Admit One • Confirmed Pass') }}
+              </p>
+            </td>
+          </tr>
 
-                      <!-- Ticket Grid -->
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%"
-                        style="border-top: 1px solid #222222; padding-top: 30px;">
-                        <tr>
-                          <td valign="top" class="ticket-details" style="padding-bottom: 20px;">
-                            <div
-                              style="font-size: 10px; color: #555555; letter-spacing: 2px; text-transform: uppercase;">
-                              Date</div>
-                            <div style="font-size: 16px; color: #ffffff; margin-top: 5px;">{{ event_date }}</div>
-                          </td>
-                          <td valign="top" class="ticket-details" style="padding-bottom: 20px;">
-                            <div
-                              style="font-size: 10px; color: #555555; letter-spacing: 2px; text-transform: uppercase;">
-                              Time</div>
-                            <div style="font-size: 16px; color: #ffffff; margin-top: 5px;">{{ event_time }}</div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td valign="top" class="ticket-details">
-                            <div
-                              style="font-size: 10px; color: #555555; letter-spacing: 2px; text-transform: uppercase;">
-                              Location</div>
-                            <div style="font-size: 16px; color: #ffffff; margin-top: 5px;">{{ event_location }}</div>
-                          </td>
-                          <td valign="top" class="ticket-details">
-                            <div
-                              style="font-size: 10px; color: #555555; letter-spacing: 2px; text-transform: uppercase;">
-                              Access</div>
-                            <div style="font-size: 16px; color: #C5A059; font-weight: 700; margin-top: 5px;">{{
-                              event_access }}</div>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
+          <!-- EVENT DETAILS GRID -->
+          <tr>
+            <td style="padding: 0 28px 20px 28px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #121214; border: 1px solid #C8A96B; border-radius: 12px;">
+                <tr>
+                  <td class="grid-stack" width="33%" style="padding: 14px 10px; text-align: center; border-right: 1px solid #282828;">
+                    <div style="font-size: 8.5px; color: #A6A6A6; letter-spacing: 1.5px; text-transform: uppercase;">DATE</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #F5F3EE; margin-top: 4px;">{{ event_date }}</div>
+                  </td>
+                  <td class="grid-stack" width="33%" style="padding: 14px 10px; text-align: center; border-right: 1px solid #282828;">
+                    <div style="font-size: 8.5px; color: #A6A6A6; letter-spacing: 1.5px; text-transform: uppercase;">TIME</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #F5F3EE; margin-top: 4px;">{{ event_time|default('8:00 PM') }}</div>
+                  </td>
+                  <td class="grid-stack" width="34%" style="padding: 14px 10px; text-align: center;">
+                    <div style="font-size: 8.5px; color: #A6A6A6; letter-spacing: 1.5px; text-transform: uppercase;">VENUE</div>
+                    <div style="font-size: 12px; font-weight: 700; color: #F5F3EE; margin-top: 4px;">{{ event_location|default('Main Arena') }}</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-                  <!-- Perforation line -->
-                  <tr>
-                    <td align="center" style="padding: 0 20px;">
-                      <div style="border-top: 2px dashed #222222; height: 1px; width: 100%;"></div>
-                    </td>
-                  </tr>
+          <!-- ATTENDEE & CREDENTIAL METADATA -->
+          <tr>
+            <td style="padding: 0 28px 20px 28px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #141414; border: 1px solid #282828; border-radius: 12px;">
+                <tr>
+                  <td style="padding: 16px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td align="left">
+                          <div style="font-size: 8.5px; color: #A6A6A6; letter-spacing: 1.5px; text-transform: uppercase;">MEMBER</div>
+                          <div style="font-size: 15px; font-weight: 700; color: #FFFFFF; margin-top: 3px;">
+                            {{ member_label|default('Pass Holder') }}
+                          </div>
+                        </td>
+                        <td align="right">
+                          <div style="font-size: 8.5px; color: #A6A6A6; letter-spacing: 1.5px; text-transform: uppercase;">MEMBER ID</div>
+                          <div style="font-size: 12px; font-weight: 700; color: #C8A96B; font-family: monospace; margin-top: 3px;">
+                            {{ member_id }}
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-                  <!-- Footer of Ticket -->
-                  <tr>
-                    <td style="padding: 30px 40px;" align="center">
-                      <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                        <tr>
-                          <td align="left">
-                            <div style="font-size: 10px; color: #555555; letter-spacing: 1px;">{{ member_label }} {{
-                              member_id }}</div>
-                          </td>
-                          <td align="right">
-                            <a href="{{ primary_button_url }}" class="btn"
-                              style="background-color: #C5A059; color: #000000; padding: 12px 25px; text-decoration: none; border-radius: 2px; font-weight: 800; font-size: 12px; letter-spacing: 2px; display: inline-block;">{{
-                              primary_button_label }}</a>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+          <!-- ENTRY QR CODE PASS BLOCK -->
+          <tr>
+            <td style="padding: 0 28px 24px 28px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F8F7F4; border: 1px solid #C8A96B; border-radius: 12px; text-align: center;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <div style="font-size: 9.5px; font-weight: 800; color: #080808; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">
+                      YOUR ENTRY PASS
+                    </div>
+                    {% if qrcode_url %}
+                    <div style="display: inline-block; padding: 10px; background-color: #FFFFFF; border-radius: 8px; border: 1px solid #E5E5E5;">
+                      <img src="{{ qrcode_url }}" alt="Entry QR Pass" width="160" height="160" style="display: block; width: 160px; height: 160px;" />
+                    </div>
+                    {% endif %}
+                    <div style="font-size: 9px; font-weight: 700; color: #666666; letter-spacing: 1px; text-transform: uppercase; margin-top: 10px;">
+                      PRESENT THIS CODE AT VENUE ENTRANCE
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-            <!-- CTA SECTION -->
-            <tr>
-              <td align="center" style="padding: 20px 0 60px 0;">
-                <p style="color: #888888; font-size: 14px; margin-bottom: 25px; font-style: italic;">{{ quote_text }}
-                </p>
-                <div style="height: 1px; width: 100px; background-color: #C5A059; margin-bottom: 25px;"></div>
-                <table border="0" cellpadding="0" cellspacing="0">
-                  <tr>
-                    <td style="padding-right: 20px;">
-                      <a href="{{ secondary_button_url }}"
-                        style="color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">{{
-                        secondary_button_label }}</a>
-                    </td>
-                    <td>
-                      <a href="{{ tertiary_button_url }}"
-                        style="color: #C5A059; text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">{{
-                        tertiary_button_label }} &rarr;</a>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+          <!-- FOOTER -->
+          <tr>
+            <td style="background-color: #080808; padding: 20px 28px; text-align: center; border-top: 1px solid #222222;">
+              <div style="font-size: 9px; color: #C8A96B; letter-spacing: 2px; text-transform: uppercase; font-weight: 700;">
+                VERIFIED DIGITAL CREDENTIAL • ECHELONTIX
+              </div>
+              <div style="font-size: 8px; color: #666666; letter-spacing: 1.5px; margin-top: 4px; text-transform: uppercase;">
+                THIS TICKET IS UNIQUE & NON-TRANSFERABLE
+              </div>
+            </td>
+          </tr>
 
-            <!-- FOOTER -->
-            <tr>
-              <td align="center" style="border-top: 1px solid #1a1a1a; padding-top: 50px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                  <tr>
-                    <td align="center" style="padding-bottom: 30px;">
-                      <span style="color: #C5A059; font-size: 18px; margin: 0 15px;">◈</span>
-                      <span style="color: #C5A059; font-size: 18px; margin: 0 15px;">◈</span>
-                      <span style="color: #C5A059; font-size: 18px; margin: 0 15px;">◈</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="center" style="color: #444444; font-size: 11px; line-height: 20px; letter-spacing: 1px;">
-                      ECHELON TIX &copy; 2026. ALL RIGHTS RESERVED.<br />
-                      LAGOS • LONDON • DUBAI • NEW YORK<br /><br />
-                      <a href="{{ unsubscribe_url }}"
-                        style="color: #666666; text-decoration: underline;">UNSUBSCRIBE</a> &nbsp;&bull;&nbsp; <a
-                        href="{{ privacy_url }}" style="color: #666666; text-decoration: underline;">PRIVACY</a>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-
-          </table>
-        </td>
-      </tr>
-    </table>
-  </center>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
-
 </html>
